@@ -242,14 +242,10 @@ impl Register {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[repr(u8)]
 pub enum Cmd {
-    /// Starts Fast Offset Calibration for the accel and gyro as configured in Register (0x69) 
+    /// Starts Fast Offset Calibration for the accel and gyro as configured in Register (0x69)
     /// FOC_CONF and stores the result into the Register (0x71-0x77) OFFSET register.
     START_OFC = 0x03,
 
-
-    // acc_set_pmu_mode: 0b0001 00nn
-    // Sets the PMU mode for the accelerometer. The encoding for ‘nn’ is identical 
-    // to acc_pmu_status in Register (0x03) PMU_STATUS.
     /// Sets the PMU mode for the accelerometer to Suspend.
     ACC_SET_PMU_MODE_SUSPEND = 0b00010000,
 
@@ -259,5 +255,15 @@ pub enum Cmd {
     /// Sets the PMU mode for the accelerometer to Low Power.
     ACC_SET_PMU_MODE_LOW_POWER = 0b00010010,
 
-    
+    /// Sets the PMU mode for the gyroscope to Suspend.
+    GYR_SET_PMU_MODE_SUSPEND = 0b00010100,
+
+    /// Sets the PMU mode for the gyroscope to Suspend.
+    GYR_SET_PMU_MODE_NORMAL = 0b00010101,
+
+    /// RESERVED.
+    //GYR_SET_PMU_MODE_RESERVED = 0b00010110,
+
+    /// Sets the PMU mode for the gyroscope to Fast Start-up.
+    GYR_SET_PMU_MODE_FAST_STARTUP = 0b00010111,
 }
