@@ -26,7 +26,6 @@
 )]
 #![forbid(unsafe_code)]
 
-pub extern crate accelerometer;
 extern crate embedded_hal as hal;
 
 mod register;

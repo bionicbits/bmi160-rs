@@ -11,6 +11,5 @@ categories  = ["embedded", "no-std"]
 keywords    = ["bosch", "accelerometer"]
 
 [dependencies]
-accelerometer = { version = "0.4", features = ["orientation"] }
 embedded-hal = "0.2"
 bitflags = "1"

@@ -89,7 +89,7 @@ pub enum Register {
     /// Sets the output data rate of the magnetometer interface in the sensor.
     MAG_CONF = 0x44,
 
-    /// FIFO_DOWNS
+    /// FIFO_DOWNS (Read/Write)
     ///
     /// Used to configure the down sampling ratios of the accel and gyro data for FIFO.
     FIFO_DOWNS = 0x45,
@@ -137,7 +137,7 @@ pub enum Register {
     /// Contains the data source definition for the two interrupt groups.
     INT_DATA = 0x58,
 
-    /// INT_LOWHIGH
+    /// INT_LOWHIGH (Read/Write)
     ///
     /// Contains the configuration for the low g interrupt.
     INT_LOWHIGH = 0x5A,
@@ -218,5 +218,23 @@ impl Register {
     /// Get register address
     pub fn addr(&self) -> u8 {
         *self as u8
+    }
+
+    /// Is the register read-only?
+    pub fn read_only(self) -> bool {
+        match self {
+            Register::CHIP_ID
+            | Register::ERROR_REG
+            | Register::PMU_STATUS
+            | Register::DATA
+            | Register::SENSORTIME
+            | Register::STATUS
+            | Register::INT_STATUS
+            | Register::TEMPERATURE
+            | Register::FIFO_LENGTH
+            | Register::FIFO_DATA
+            | Register::STEP_CNT => true,
+            _ => false,
+        }
     }
 }
