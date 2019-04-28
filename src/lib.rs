@@ -29,6 +29,7 @@
 extern crate embedded_hal as hal;
 
 mod register;
+use self::register::Register;
 
 use embedded_hal::blocking::i2c::{Write, WriteRead};
 
@@ -53,5 +54,32 @@ where
     pub fn new(i2c: I2C) -> Result<Self, E> {
         let bmi160 = Bmi160 { i2c };
         Ok(bmi160)
+    }
+
+    /// Resets and restarts the device.
+    pub fn soft_reset(&mut self) -> Result<(), E> {
+        Ok(())
+    }
+
+    /// Write to the given register
+    // TODO: make this an internal API after enough functionality is wrapped
+    pub fn write_register(&mut self, register: Register, value: u8) -> Result<(), E> {
+        debug_assert!(!register.read_only(), "can't write to read-only register");
+        self.i2c.write(ADDRESS, &[register.addr(), value])?;
+        Ok(())
+    }
+
+    /// Write to a given register, then read the result
+    // TODO: make this an internal API after enough functionality is wrapped
+    pub fn write_read_register(&mut self, register: Register, buffer: &mut [u8]) -> Result<(), E> {
+        self.i2c.write_read(ADDRESS, &[register.addr()], buffer)
+    }
+
+    /// Get the chip ID
+    pub fn get_chip_id(&mut self) -> Result<u8, E> {
+        let input = [Register::CHIP_ID.addr()];
+        let mut output = [0u8];
+        self.i2c.write_read(ADDRESS, &input, &mut output)?;
+        Ok(output[0])
     }
 }
