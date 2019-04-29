@@ -83,3 +83,50 @@ where
         Ok(output[0])
     }
 }
+
+/// Raw Data Struct for the XYZ data returned from reading
+/// the data register. The individual XYZ contain both
+/// u8 for LSB and MSB.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(C)]
+pub struct DataXYZRaw {
+    /// X LSB
+    pub x_lsb: u8,
+
+    /// X MSB
+    x_msb: u8,
+
+    /// Y LSB
+    y_lsb: u8,
+
+    /// Y MSB
+    y_msb: u8,
+
+    /// Z LSB
+    z_lsb: u8,
+
+    /// Z MSB
+    z_msb: u8,
+}
+
+/// The Raw Data structure returned from reading the 
+/// data register.
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(C)]
+pub struct Data {
+    /// Magnatometer XYZ Raw Data
+    pub mag: DataXYZRaw,
+
+    /// RHALL LSB Data
+    pub rhall_lsb: u8,
+
+    /// RHALL MSB Data
+    pub rhall_msb: u8,
+
+    /// Gyroscope XYZ Raw Data
+    pub gyro: DataXYZRaw,
+
+    /// Accelerometer XYZ Raw Data
+    pub accel: DataXYZRaw,
+}
+
