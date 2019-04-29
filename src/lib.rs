@@ -56,6 +56,21 @@ where
         Ok(bmi160)
     }
 
+    /// Get the chip ID
+    pub fn get_chip_id(&mut self) -> Result<u8, E> {
+        let input = [Register::CHIP_ID.addr()];
+        let mut output = [0u8];
+        self.i2c.write_read(ADDRESS, &input, &mut output)?;
+        Ok(output[0])
+    }
+
+    /// Read The Data (Mag, Gyro, RHALL, Accel) from the Data Register
+    pub fn read_data(&mut self) -> Result<Data, E> {
+        let mut buffer = [0u8, 20];
+        self.i2c.write_read(ADDRESS, &[Register::CMD.addr()], &mut buffer)?;
+        Ok(Data::new_from_buffer(&mut buffer))
+    }
+
     /// Resets and restarts the device.
     pub fn soft_reset(&mut self) -> Result<(), E> {
         Ok(())
@@ -73,14 +88,6 @@ where
     // TODO: make this an internal API after enough functionality is wrapped
     pub fn write_read_register(&mut self, register: Register, buffer: &mut [u8]) -> Result<(), E> {
         self.i2c.write_read(ADDRESS, &[register.addr()], buffer)
-    }
-
-    /// Get the chip ID
-    pub fn get_chip_id(&mut self) -> Result<u8, E> {
-        let input = [Register::CHIP_ID.addr()];
-        let mut output = [0u8];
-        self.i2c.write_read(ADDRESS, &input, &mut output)?;
-        Ok(output[0])
     }
 }
 
@@ -128,5 +135,43 @@ pub struct Data {
 
     /// Accelerometer XYZ Raw Data
     pub accel: DataXYZRaw,
+}
+
+impl Data {
+    /// Returns a new Data struct from the data buffer returned
+    /// from the Data register.
+    pub fn new_from_buffer(buffer: &mut [u8]) -> Self {
+        Data {
+            mag:  DataXYZRaw {
+                x_lsb: buffer[0],
+                x_msb: buffer[1],
+                y_lsb: buffer[2],
+                y_msb: buffer[3],
+                z_lsb: buffer[4],
+                z_msb: buffer[5],
+            },
+
+            rhall_lsb: buffer[6],
+            rhall_msb: buffer[7],
+
+            gyro: DataXYZRaw {
+                x_lsb: buffer[8],
+                x_msb: buffer[9],
+                y_lsb: buffer[10],
+                y_msb: buffer[11],
+                z_lsb: buffer[12],
+                z_msb: buffer[13],
+            },
+
+            accel: DataXYZRaw {
+                x_lsb: buffer[14],
+                x_msb: buffer[15],
+                y_lsb: buffer[16],
+                y_msb: buffer[17],
+                z_lsb: buffer[18],
+                z_msb: buffer[19],
+            }, 
+        }
+    }
 }
 
